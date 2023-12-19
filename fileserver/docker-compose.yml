@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  camel-fileserver:
+    image: openjdk:17-alpine
+    container_name: camel-fileserver
+    ports:
+      - 8085:8081
+    working_dir: /home
+    entrypoint:
+      - java
+      - '-Dcamel.springboot.routes-include-pattern=file:routes/*.xml'
+      - -jar
+      - ./fileserver-1.0-SNAPSHOT.jar
+    volumes:
+      # 路由文件
+      - ./target/fileserver-1.0-SNAPSHOT.jar:/home/fileserver-1.0-SNAPSHOT.jar
+      # 路由文件
+      - ./routes:/home/routes
+      # 上传文件目录
+      - ./outbox:/home/outbox
