@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://camel.apache.org/schema/spring"
+  xsi:schemaLocation="http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
+  <bean name="uploadProcessor" type="jasony62.camel.UploadProcessor" />
+  <bean name="fileProcessor" type="jasony62.camel.FileProcessor">
+    <properties>
+      <property key="processedFilenamePropKey" value="processedFilename" />
+    </properties>
+  </bean>
+  <route>
+    <from uri="jetty:http://0.0.0.0:{{fileserver.port}}/upload" />
+    <!--预处理，提取请求中的关键信息-->
+    <process ref="uploadProcessor" />
+    <log message="文件数量：${exchangeProperty.filePartNames.size()}" />
+    <log message="字段数量：${exchangeProperty.fieldPartNames.size()}" />
+    <!--保存请求中的文件-->
+    <loop>
+      <!--设置循环次数-->
+      <simple>${exchangeProperty.filePartNames.size()}</simple>
+      <!--给processor设置参数-->
+      <bean ref="fileProcessor"
+        method="setFilePartName(${exchangeProperty.filePartNames[${header.CamelLoopIndex}]})" />
+      <!--处理文件-->
+      <process ref="fileProcessor" />
+      <!--保存到本地文件-->
+      <to
+        uri="file:outbox/?fileName=${header.prefix}${exchangeProperty.processedFilename}"></to>
+    </loop>
+    <!--清空body中的内容-->
+    <transform>
+      <constant></constant>
+    </transform>
+    <!--将提交的非文件字段统一输出到1个文件-->
+    <loop>
+      <simple>${exchangeProperty.fieldPartNames.size()}</simple>
+      <transform>
+        <simple>${body}${exchangeProperty.fieldPartNames[${header.CamelLoopIndex}]}=${header[${exchangeProperty.fieldPartNames[${header.CamelLoopIndex}]}]}\n</simple>
+      </transform>
+    </loop>
+    <to uri="file:outbox/?fileName=${header.prefix}fields.txt"></to>
+    <to uri="direct:response"></to>
+  </route>
+  <route>
+    <from uri="direct:response" />
+    <setBody>
+      <simple>ok</simple>
+    </setBody>
+  </route>
+</camel>
