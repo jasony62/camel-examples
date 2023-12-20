@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <rest path="/apis">
+    <get path="/step_1">
+      <to uri="direct:step_1" />
+    </get>
+    <get path="/step_2">
+      <to uri="direct:step_2" />
+    </get>
+    <get path="/step_3_1">
+      <to uri="direct:step_3_1" />
+    </get>
+    <get path="/step_3_2">
+      <to uri="direct:step_3_2" />
+    </get>
+    <get path="/step_3_3">
+      <to uri="direct:step_3_3" />
+    </get>
+    <get path="/step_4_1">
+      <to uri="direct:step_4_1" />
+    </get>
+    <get path="/step_4_2">
+      <to uri="direct:step_4_2" />
+    </get>
+  </rest>
+  <route id="step_1">
+    <from uri="direct:step_1" />
+    <log message="step_1" />
+    <transform>
+      <constant>step_1</constant>
+    </transform>
+  </route>
+  <route id="step_2">
+    <from uri="direct:step_2" />
+    <log message="step_2" />
+    <transform>
+      <constant>step_2</constant>
+    </transform>
+  </route>
+  <route id="step_3_1">
+    <from uri="direct:step_3_1" />
+    <log message="step_3_1" />
+    <delay>
+      <constant>600</constant>
+    </delay>
+    <transform>
+      <constant>step_3_1</constant>
+    </transform>
+  </route>
+  <route id="step_3_2">
+    <from uri="direct:step_3_2" />
+    <log message="step_3_2" />
+    <delay>
+      <constant>300</constant>
+    </delay>
+    <transform>
+      <constant>step_3_2</constant>
+    </transform>
+  </route>
+  <route id="step_3_3">
+    <from uri="direct:step_3_3" />
+    <log message="step_3_3" />
+    <delay>
+      <constant>100</constant>
+    </delay>
+    <transform>
+      <constant>step_3_3</constant>
+    </transform>
+  </route>
+  <route id="step_4_1">
+    <from uri="direct:step_4_1" />
+    <log message="step_4_1" />
+    <transform>
+      <constant>step_4_1</constant>
+    </transform>
+  </route>
+  <route id="step_4_2">
+    <from uri="direct:step_4_2" />
+    <log message="step_4_2" />
+    <transform>
+      <constant>step_4_2</constant>
+    </transform>
+  </route>
+</camel>

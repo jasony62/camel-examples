@@ -91,6 +91,7 @@ java -Dcamel.springboot.routes-include-pattern='file:routes/*.xml,classpath:came
 | 名称       | 功能描述                                           | 文档                          |
 | ---------- | -------------------------------------------------- | ----------------------------- |
 | fileserver | 文件服务器，支持通过 http 上传文件，并保存在本地。 | [说明](/fileserver/README.md) |
+| apiflow    | 演示 apis 编排。                                   | [说明](/apiflow/README.md)    |
 
 # docker 中运行
 

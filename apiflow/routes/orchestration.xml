@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <rest path="/flows">
+    <get path="/flow01">
+      <to uri="direct:flow01" />
+    </get>
+  </rest>
+  <route>
+    <from uri="direct:flow01" />
+    <log message="flow01 start" />
+    <to
+      uri="rest:get:/apis/step_1?host=localhost:8081&amp;bridgeEndpoint=true" />
+    <setProperty name="result.step_1">
+      <simple>${body}</simple>
+    </setProperty>
+    <to
+      uri="rest:get:/apis/step_2?host=localhost:8081&amp;bridgeEndpoint=true" />
+    <setProperty name="result.step_2">
+      <simple>${body}</simple>
+    </setProperty>
+    <!--并行执行多个步骤-->
+    <multicast parallelProcessing="true"
+      aggregationStrategy="#class:jasony62.camel.JoinAggregationStrategy" streaming="true">
+      <to uri="direct:flow_step_3_1" />
+      <to uri="direct:flow_step_3_2" />
+      <to uri="direct:flow_step_3_3" />
+    </multicast>
+    <setProperty name="result.step_3">
+      <simple>${body}</simple>
+    </setProperty>
+    <choice>
+      <when>
+        <simple>${header.case} == 'case01'</simple>
+        <to
+          uri="rest:get:/apis/step_4_1?host=localhost:8081&amp;bridgeEndpoint=true" />
+      </when>
+      <otherwise>
+        <to
+          uri="rest:get:/apis/step_4_2?host=localhost:8081&amp;bridgeEndpoint=true" />
+      </otherwise>
+    </choice>
+    <setProperty name="result.step_4">
+      <simple>${body}</simple>
+    </setProperty>
+    <transform>
+      <simple>
+        ${exchangeProperty[result.step_1]},${exchangeProperty[result.step_2]},${exchangeProperty[result.step_3]},${exchangeProperty[result.step_4]}</simple>
+    </transform>
+    <log message="flow01 end" />
+  </route>
+  <route id="flow_step_3_1">
+    <from uri="direct:flow_step_3_1" />
+    <to
+      uri="rest:get:/apis/step_3_1?host=localhost:8081&amp;bridgeEndpoint=true" />
+  </route>
+  <route id="flow_step_3_2">
+    <from uri="direct:flow_step_3_2" />
+    <to
+      uri="rest:get:/apis/step_3_2?host=localhost:8081&amp;bridgeEndpoint=true" />
+  </route>
+  <route id="flow_step_3_3">
+    <from uri="direct:flow_step_3_3" />
+    <to
+      uri="rest:get:/apis/step_3_3?host=localhost:8081&amp;bridgeEndpoint=true" />
+  </route>
+</camel>
