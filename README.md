@@ -93,6 +93,7 @@ java -Dcamel.springboot.routes-include-pattern='file:routes/*.xml,classpath:came
 | fileserver | 文件服务器，支持通过 http 上传文件，并保存在本地。 | [说明](/fileserver/README.md) |
 | apiflow    | 演示 apis 编排。                                   | [说明](/apiflow/README.md)    |
 | adaption   | 演示数据适配场景。                                 | [说明](/adaption/README.md)   |
+| bridge     | 演示桥接消息队列（kafka）和 REST 接口的场景。      | [说明](/bridge/README.md)     |
 
 # docker 中运行
 

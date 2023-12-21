@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <rest path="/bridge">
+    <post path="/bridge01" consumes="application/json">
+      <to uri="direct:bridge01" />
+    </post>
+  </rest>
+  <route>
+    <from uri="direct:bridge01" />
+    <!-- 将收到的消息发送到kafka -->
+    <setBody>
+      <simple>${body}</simple>
+    </setBody>
+    <setHeader name="Kafka.KEY">
+      <header>messageId</header>
+    </setHeader>
+    <to uri="kafka:camel-bridge?brokers=localhost:19092" />
+  </route>
+</camel>

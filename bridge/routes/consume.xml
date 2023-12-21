@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <route>
+    <!-- 从消息队列接收数据。 -->
+    <!-- 指定从头开始消费。 -->
+    <setHeader name="Kafka.OFFSET">
+      <constant>0</constant>
+    </setHeader>
+    <from
+      uri="kafka:camel-bridge?brokers=localhost:19092&amp;groupId=camel" />
+    <!-- 输出收到的消息 -->
+    <log message="Message received from Kafka : ${body}" />
+    <log message="on the topic ${headers[kafka.TOPIC]}" />
+    <log message="on the partition ${headers[kafka.PARTITION]}" />
+    <log message="with the offset ${headers[kafka.OFFSET]}" />
+    <log message="with the key ${headers[kafka.KEY]}" />
+    <!-- 保存到文件 -->
+    <to uri="file:outbox/?fileName=messages.jsonl&amp;fileExist=Append&amp;appendChars=\n" />
+  </route>
+</camel>
