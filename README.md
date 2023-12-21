@@ -92,6 +92,7 @@ java -Dcamel.springboot.routes-include-pattern='file:routes/*.xml,classpath:came
 | ---------- | -------------------------------------------------- | ----------------------------- |
 | fileserver | 文件服务器，支持通过 http 上传文件，并保存在本地。 | [说明](/fileserver/README.md) |
 | apiflow    | 演示 apis 编排。                                   | [说明](/apiflow/README.md)    |
+| adaption   | 演示数据适配场景。                                 | [说明](/adaption/README.md)   |
 
 # docker 中运行
 
@@ -110,3 +111,18 @@ docker cp $PWD/fileserver/target/fileserver-1.0-SNAPSHOT.jar camel-fileserver:/h
 ```sh
 java -Dcamel.springboot.routes-include-pattern='file:routes/*.xml' -jar ./fileserver-1.0-SNAPSHOT.jar
 ```
+
+# 其它
+
+`Apache Camle`支持路由文件发生变化时自动加载，可以方便调试和动态更新。这个特性需要在`applicaton.properties`中设置配置项。
+
+```ini
+# turn on route reloading on file changes
+camel.springboot.routes-reload-enabled = true
+# the base directory to watch
+camel.springboot.routes-reload-directory = routes
+# pattern(s) for files to watch
+camel.springboot.routes-reload-pattern = *.xml
+```
+
+**注意**：这个特性在有多个路由文件时会报错，例如：airflow，原因未明。

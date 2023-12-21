@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<camel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <rest path="/adaption">
+    <post path="/adapt01" consumes="application/json">
+      <to uri="direct:adapt01" />
+    </post>
+  </rest>
+  <route>
+    <from uri="direct:adapt01" />
+    <!-- 将请求中的数据转化为JSON对象（JsonNode）-->
+    <unmarshal>
+      <json />
+    </unmarshal>
+    <log message="收到的消息体 - \n${body}" />
+    <!-- 通过mustache模板改写JSON对象 -->
+    <setHeader name="MustacheResourceUri">
+      <!-- 模板文件的路径 -->
+      <constant>
+        file:templates/template01.mustache</constant>
+    </setHeader>
+    <to uri="mustache:dummy?allowTemplateFromHeader=true" />
+    <!-- 下面的两次转换不是必须的，只是为了格式化JSON数据 -->
+    <unmarshal>
+      <json />
+    </unmarshal>
+    <marshal>
+      <json prettyPrint="true" />
+    </marshal>
+    <log message="模板生成的消息体 - \n${body}" />
+  </route>
+</camel>
